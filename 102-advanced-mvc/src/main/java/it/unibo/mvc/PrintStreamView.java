@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
-
 /**
  * This class implements a view that can write on any PrintStream.
  */

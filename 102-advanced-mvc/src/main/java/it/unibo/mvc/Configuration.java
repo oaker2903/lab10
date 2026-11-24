@@ -1,6 +1,13 @@
 package it.unibo.mvc;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Encapsulates the concept of configuration.
@@ -71,23 +78,41 @@ public final class Configuration {
      */
     public static class Builder {
 
-        private static final int DEFAULT_MIN = 0;
-        private static final int DEFAULT_MAX = 100;
-        private static final int DEFAULT_ATTEMPTS = 10;
-
-        private int currentMin = DEFAULT_MIN;
-        private int currentMax = DEFAULT_MAX;
-        private int currentAttempts = DEFAULT_ATTEMPTS;
-        private boolean consumed;
-
         public static final String SEP = File.separator;
-        private final File filePath = new File("src"+SEP+"main"+SEP+"resources"+SEP+"config.yml");
+        private final String filePath = System.getProperty("src" + SEP + "main" + SEP + "resources" + SEP + "config.yml");
+
+        private int currentMin;
+        private int currentMax;
+        private int currentAttempts;
+        private boolean consumed;
 
         /**
          * Default constructor. Produces a builder with the default configuration.
          */
-        public Builder() {
-            // Default constructor
+
+        public Builder() throws IOException {
+
+            try (
+                InputStream input = new FileInputStream(filePath);
+                Reader reader = new InputStreamReader(input, StandardCharsets.UTF_8);
+                BufferedReader buffer = new BufferedReader(reader);
+            ) {
+                this.currentMin = readDefaultValue(buffer);
+                this.currentMax = readDefaultValue(buffer);
+                this.currentAttempts = readDefaultValue(buffer);
+            }
+        }
+
+        private static int readDefaultValue(final BufferedReader reader) throws IOException {
+            final String line = reader.readLine();
+            if (line == null) {
+                throw new IOException("file cannot be null");
+            }
+            final String[] parts = line.split(":");
+            if (parts.length != 2) {
+                throw new IOException("strange line not good: " + line);
+            }
+            return Integer.parseInt(parts[1].trim());
         }
 
         /**
