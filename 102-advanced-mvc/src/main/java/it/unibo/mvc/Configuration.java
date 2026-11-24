@@ -1,5 +1,7 @@
 package it.unibo.mvc;
 
+import java.io.File;
+
 /**
  * Encapsulates the concept of configuration.
  */
@@ -77,6 +79,9 @@ public final class Configuration {
         private int currentMax = DEFAULT_MAX;
         private int currentAttempts = DEFAULT_ATTEMPTS;
         private boolean consumed;
+
+        public static final String SEP = File.separator;
+        private final File filePath = new File("src"+SEP+"main"+SEP+"resources"+SEP+"config.yml");
 
         /**
          * Default constructor. Produces a builder with the default configuration.

@@ -2,6 +2,7 @@ package it.unibo.oop.lab.lambda;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,7 +14,8 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static java.util.Collections.emptyList;
+import com.google.common.collect.Sets;
+
 import static java.util.Collections.emptyMap;
 
 /**
@@ -68,7 +70,9 @@ public final class LambdaUtilities {
         /*
          * Suggestion: consider Optional.filter
          */
-        return emptyList();
+        final List<Optional<T>> result = new ArrayList<>();
+        list.forEach( t -> result.add(Optional.ofNullable(t).filter(pre)));
+        return result;
     }
 
     /**
@@ -89,8 +93,12 @@ public final class LambdaUtilities {
         /*
          * Suggestion: consider Map.merge
          */
-        return emptyMap();
+        final Map<R, Set<T>> m = new HashMap<>();
+        list.forEach(it -> m.merge(op.apply(it), Set.of(it), Sets::union));
+        return m;
     }
+
+
 
     /**
      * Fills a map with default values for missing keys.
@@ -112,7 +120,10 @@ public final class LambdaUtilities {
          *
          * Keep in mind that a map can be iterated through its forEach method
          */
-        return emptyMap();
+
+        final Map<K, V> m = new HashMap<>();
+        map.forEach((key, value) -> m.put(key , value.orElseGet(def)));  //posso esguirlo un vaolta sola
+        return m;
     }
 
     /**
