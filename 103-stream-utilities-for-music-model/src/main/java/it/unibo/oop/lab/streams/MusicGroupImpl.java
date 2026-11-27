@@ -32,22 +32,23 @@ public final class MusicGroupImpl implements MusicGroup {
 
     @Override
     public Stream<String> orderedSongNames() {
-        return null;
+        return this.songs.stream().map(song -> song.getSongName()).sorted();
     }
 
     @Override
     public Stream<String> albumNames() {
-        return null;
+        return this.albums.keySet().stream();
     }
 
     @Override
     public Stream<String> albumInYear(final int year) {
-        return null;
+        //devo attraversare entrambi i campi di map perchè devo filtrare in base all'anno quindi keySet non va bene
+        return this.albums.entrySet().stream().filter(e -> e.getValue() == year).map(e -> e.getKey());
     }
 
     @Override
     public int countSongs(final String albumName) {
-        return -1;
+        return (int) this.songs.stream().filter(s -> s.getAlbumName().equals(Optional.of(albumName))).count();   //non posso applicare intValue perché sto usando un Long primitivo
     }
 
     @Override
